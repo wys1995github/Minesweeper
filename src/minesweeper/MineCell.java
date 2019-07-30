@@ -56,5 +56,3 @@ public class MineCell {
 		this.isDig = isDig;
 	}
 }
-
-

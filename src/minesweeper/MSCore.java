@@ -1,5 +1,7 @@
 package minesweeper;
 
+import java.awt.event.MouseEvent;
+
 public class MSCore {
 	
 	private int cellX;
@@ -96,11 +98,31 @@ public class MSCore {
 		}
 	}
 	
+	public void mouseClicked(MouseEvent e) {
+		int ox = e.getX();
+		int oy = e.getY();
+		if(ox>100 && ox<500 && oy>50 && oy<350) {
+			int cy = (int)(ox-101)/25;
+			int cx = (int)(oy-51)/25;
+			switch(e.getButton()) {
+			case MouseEvent.BUTTON1 : 
+				digCell(cx, cy);
+				break;
+			case MouseEvent.BUTTON3 : 
+				markCell(cx, cy);
+				break;
+			default :
+				break;
+		}
+		}
+	}
+	
 	public void digCell(int digX, int digY){
 		if(!mc[digX][digY].isDig()) {
 			if(mc[digX][digY].isMine()) {
 				System.out.println("²Èµ½µØÀ×ÁË£¡");
 			}else{
+				System.out.println("dig:"+digX+","+digY);
 				mc[digX][digY].setDig(true);
 				mc[digX][digY].setMark(false);
 				isWin();
@@ -112,6 +134,7 @@ public class MSCore {
 		if(mc[markX][markY].isMark()) {
 			mc[markX][markY].setMark(false);
 		}else{
+			System.out.println("mark:"+markX+","+markY);
 			mc[markX][markY].setMark(true);
 			isWin();
 		}
@@ -146,11 +169,5 @@ public class MSCore {
 				}
 			}
 		}
-	}
-	
-	public static void main(String[] args) {
-		MSCore msc = new MSCore(8, 12, 25);
-		msc.initMineCell();
-		msc.showMineCell();
 	}
 }
