@@ -2,39 +2,38 @@ package minesweeper;
 
 public class MSCore {
 	
-	public void initMineMap(int x, int y) {
-		MineCell[][] mc = new MineCell[x][y];
+	private int cellX;
+	private int cellY;
+	private int mineCount;
+	private MineCell[][] mc;
+	
+	public MSCore(int cellX, int cellY, int mineCount) {
+		this.cellX = cellX;
+		this.cellY = cellY;
+		this.mineCount = mineCount;
+		this.mc = new MineCell[cellX][cellY];
+	}
+	
+	//初始化扫雷游戏
+	public void initMineCell() {
+		initXY();
+		initMine();
+		setAroundMineSum();
+	}
+	
+	//初始化坐标
+	private void initXY() {
 		MineCell mc_temp = new MineCell(0, 0, false, false, false, 0);
-		
-		for(int i = 0; i < x; i++) {
-			for(int j = 0; j < y; j++) {
+		for(int i = 0; i < cellX; i++) {
+			for(int j = 0; j < cellY; j++) {
 				mc_temp = new MineCell(i, j, false, false, false, 0);
 				mc[i][j] = mc_temp;
 			}
 		}
-		
-		initMine(2, x, y, mc);
-		
-		for(int i = 0; i < x; i++) {
-			for(int j = 0; j < y; j++) {
-				mc_temp = mc[i][j];
-				mc_temp.setAroundMineCount(0);
-			}
-		}
-		
-		for(int i = 0; i < x; i++) {
-			for(int j = 0; j < y; j++) {
-				System.out.println(mc[i][j].getCellX());
-				System.out.println(mc[i][j].getCellY());
-				System.out.println(mc[i][j].getAroundMineCount());
-				System.out.println(mc[i][j].isMark());
-				System.out.println(mc[i][j].isMine());
-				System.out.println(mc[i][j].isUncertain()?"*":"o");
-			}
-		}
 	}
 	
-	public void initMine(int mineCount, int cellX, int cellY, MineCell[][] mc) {
+	//初始化地雷
+	private void initMine() {
 		int count_temp = mineCount;
 		for(int i = 0; i < count_temp; i++) {
 			int mineX = (int)(Math.random()*cellX);
@@ -47,38 +46,111 @@ public class MSCore {
 		}
 	}
 	
-	public int aroundMineSum(int x, int y, int cellX, int cellY, MineCell[][] mc) {
-		int mineCount = 0;
-		
-		if(mc[x-1][y-1].isMine()) {
-			mineCount++;
+	//获取每一格周围的地雷数
+	private void setAroundMineSum() {
+		for(int x = 0; x < cellX; x++) {
+			for(int y = 0; y < cellY; y++) {
+				int mineCount = 0;
+				if(x-1 >= 0 && y-1 >= 0) {
+					if(mc[x-1][y-1].isMine()) {
+						mineCount++;
+					}
+				}
+				if(x-1 >= 0) {
+					if(mc[x-1][y].isMine()) {
+						mineCount++;
+					}
+				}
+				if(x-1 >= 0 && y+1 <= cellY-1) {
+					if(mc[x-1][y+1].isMine()) {
+						mineCount++;
+					}
+				}
+				if(y-1 >= 0) {
+					if(mc[x][y-1].isMine()) {
+						mineCount++;
+					}
+				}
+				if(y+1 <= cellY-1) {
+					if(mc[x][y+1].isMine()) {
+						mineCount++;
+					}
+				}
+				if(y-1 >= 0 && x+1 <= cellX-1) {
+					if(mc[x+1][y-1].isMine()) {
+						mineCount++;
+					}
+				}
+				if(x+1 <= cellX-1) {
+					if(mc[x+1][y].isMine()) {
+						mineCount++;
+					}
+				}
+				if(x+1 <= cellX-1 && y+1 <= cellY-1) {
+					if(mc[x+1][y+1].isMine()) {
+						mineCount++;
+					}
+				}
+				mc[x][y].setAroundMineCount(mineCount);
+			}
 		}
-		if(mc[x][y-1].isMine()) {
-			mineCount++;
+	}
+	
+	public void digCell(int digX, int digY){
+		if(!mc[digX][digY].isDig()) {
+			if(mc[digX][digY].isMine()) {
+				System.out.println("踩到地雷了！");
+			}else{
+				mc[digX][digY].setDig(true);
+				mc[digX][digY].setMark(false);
+				isWin();
+			}
 		}
-		if(mc[x+1][y-1].isMine()) {
-			mineCount++;
+	}
+	
+	public void markCell(int markX, int markY){
+		if(mc[markX][markY].isMark()) {
+			mc[markX][markY].setMark(false);
+		}else{
+			mc[markX][markY].setMark(true);
+			isWin();
 		}
-		if(mc[x-1][y].isMine()) {
-			mineCount++;
+	}
+	
+	private void isWin() {
+		int markTrueSum = 0;
+		int digSum = 0;
+		for(int i = 0; i < cellX; i++) {
+			for(int j = 0; j < cellY; j++) {
+				if(mc[i][j].isDig()) {
+					digSum++;
+				}
+				if(mc[i][j].isMark() && mc[i][j].isMine()) {
+					markTrueSum++;
+				}
+			}
 		}
-		if(mc[x+1][y].isMine()) {
-			mineCount++;
+		if(markTrueSum == mineCount || digSum == cellX*cellY-mineCount) {
+			System.out.println("恭喜您！");
 		}
-		if(mc[x-1][y+1].isMine()) {
-			mineCount++;
+	}
+	
+	public void showMineCell() {
+		for(int i = 0; i < cellX; i++) {
+			for(int j = 0; j < cellY; j++) {
+				System.out.print(mc[i][j].getAroundMineCount());
+				System.out.print(mc[i][j].isMine());
+				System.out.print("\t");
+				if(j == cellY-1) {
+					System.out.println();
+				}
+			}
 		}
-		if(mc[x][y+1].isMine()) {
-			mineCount++;
-		}
-		if(mc[x+1][y+1].isMine()) {
-			mineCount++;
-		}
-		return mineCount;
 	}
 	
 	public static void main(String[] args) {
-		MSCore ms = new MSCore();
-		ms.initMineMap(3, 2);
+		MSCore msc = new MSCore(8, 12, 25);
+		msc.initMineCell();
+		msc.showMineCell();
 	}
 }

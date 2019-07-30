@@ -6,15 +6,16 @@ public class MineCell {
 	private int cellY = 0;	//Y坐标
 	private boolean isMine = false;	//是否死雷
 	private boolean isMark = false;	//是否被标记
-	private boolean isUncertain = false;	//是否不确定
+	private boolean isDig = false;	//是否被挖开
 	private int aroundMineCount = 0;	//周围地雷总数
 	
-	public MineCell(int cellX, int cellY, boolean isMine, boolean isMark, boolean isUncertain, int aroundMineCount) {
+	//构造函数
+	public MineCell(int cellX, int cellY, boolean isMine, boolean isMark, boolean isDig, int aroundMineCount) {
 		this.cellX = cellX;
 		this.cellY = cellY;
 		this.isMine = isMine;
 		this.isMark = isMark;
-		this.isUncertain = isUncertain;
+		this.isDig = isDig;
 		this.aroundMineCount = aroundMineCount;
 	}
 	
@@ -42,17 +43,17 @@ public class MineCell {
 	public void setMark(boolean isMark) {
 		this.isMark = isMark;
 	}
-	public boolean isUncertain() {
-		return isUncertain;
-	}
-	public void setUncertain(boolean isUncertain) {
-		this.isUncertain = isUncertain;
-	}
 	public int getAroundMineCount() {
 		return aroundMineCount;
 	}
 	public void setAroundMineCount(int aroundMineCount) {
 		this.aroundMineCount = aroundMineCount;
+	}
+	public boolean isDig() {
+		return isDig;
+	}
+	public void setDig(boolean isDig) {
+		this.isDig = isDig;
 	}
 }
 

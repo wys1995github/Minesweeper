@@ -1,6 +1,5 @@
 package minesweeper;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JFrame;
@@ -12,11 +11,6 @@ public class MSFrame extends JFrame {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		Color originColor = g.getColor();
-		g.setColor(Color.BLUE);
-		g.fillOval(50, 50, 5, 5);
-		g.drawLine(0, 25, 100, 100);
-		g.setColor(originColor);
 	}
 	
 	public void launchFrame() {
@@ -27,9 +21,9 @@ public class MSFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-//	public static void main(String[] args) {
-//		MSFrame ms = new MSFrame();
-//		ms.launchFrame();
-//	}
+	public static void main(String[] args) {
+		MSFrame ms = new MSFrame();
+		ms.launchFrame();
+	}
 	
 }
